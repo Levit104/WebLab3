@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+    <title>Web Lab №3 - Стартовая страница</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+<h:body>
+    <div>
+        <h1>Лабораторная работа №3</h1>
+    </div>
+    <div id="title">
+        Герасимов Артём Кириллович<br/>Группа P32111<br/>Вариант 11311
+    </div>
+    <div>
+        <h1>Текущие дата и время</h1>
+        <!-- Заполнение даты и времени через JS -->
+        <p id="current_date"/>
+        <p id="current_time"/>
+    </div>
+    <div id="footer">
+        <p>Санкт-Петербург<br/><br/>2022</p>
+        <div id="logo">
+            <img src="resources/img/logo-horizontal.png" alt="Университет ИТМО"/>
+        </div>
+    </div>
+    <br/>
+    <div class="borderless">
+        <h:link class="custom_button" outcome="toMain">Перейти на основную страницу</h:link>
+    </div>
+    <h:outputScript library="js" name="date-time.js"/>
+</h:body>
+</html>

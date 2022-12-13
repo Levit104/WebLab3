@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ps="http://xmlns.jcp.org/jsf/passthrough"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+    <title>Web Lab №3 - Основная страница</title>
+    <h:outputStylesheet library="css" name="style.css"/>
+</h:head>
+<h:body>
+    <div class="borderless">
+        <h:link class="custom_button" outcome="toIndex">Вернуться на стартовую страницу</h:link>
+    </div>
+    <br/>
+
+    <div>
+        <h1>График</h1>
+        <canvas id="graph" width="600px" height="600px"/>
+    </div>
+
+    <p:remoteCommand name="sendValues" actionListener="#{resultBean.addResultFromGraph()}" process="@this" update="results_container"/>
+
+    <div>
+        <h1>Выбор координат и значений</h1>
+        <h:form id="form" ps:autocomplete="off">
+            <h:outputLabel value="Координата X:" styleClass="value_label"><span id="current_value"/></h:outputLabel>
+
+            <h:message for="x_value" styleClass="error"/>
+            <h:panelGroup styleClass="hidden_x">
+                <h:inputHidden id="x_value"
+                               value="#{resultBean.result.x}"
+                               required="true"
+                               requiredMessage="Значение не выбрано"
+                               validatorMessage="Недопустимое значение, значение должно быть в диапазоне от -3 до 5 включительно"
+                               converterMessage="Недопустимое значение, значение должно быть в диапазоне от -3 до 5 включительно">
+                    <f:validateDoubleRange minimum="-3" maximum="5"/>
+                </h:inputHidden>
+            </h:panelGroup>
+
+            <h:commandButton type="button" value="-3" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="-2" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="-1" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="0" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="1" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="2" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="3" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="4" styleClass="form_element custom_button x_value"/>
+            <h:commandButton type="button" value="5" styleClass="form_element custom_button x_value"/>
+
+
+            <h:outputLabel value="Координата Y:" styleClass="value_label"/>
+            <h:message for="y_value" styleClass="error"/>
+            <h:inputText styleClass="form_element y_value"
+                         ps:placeholder="от -3 до 3 включительно"
+                         value="#{resultBean.result.y}"
+                         id="y_value"
+                         required="true"
+                         requiredMessage="Значение не введено"
+                         validatorMessage="Недопустимое значение, значение должно быть в диапазоне от -3 до 3 включительно"
+                         converterMessage="Недопустимое значение, значение должно быть в диапазоне от -3 до 3 включительно">
+                <f:validateDoubleRange minimum="-3" maximum="3"/>
+            </h:inputText>
+
+
+            <h:outputLabel value="Значение R:" styleClass="value_label"/>
+            <h:message for="r_value" styleClass="error"/>
+            <h:selectOneMenu styleClass="form_element r_value"
+                             value="#{resultBean.result.r}"
+                             id="r_value"
+                             required="true"
+                             requiredMessage="Значение не выбрано">
+                <f:selectItem itemDisabled="true" itemLabel="Выберите значение"/>
+                <f:selectItem itemValue="1" itemLabel="1"/>
+                <f:selectItem itemValue="2" itemLabel="2"/>
+                <f:selectItem itemValue="3" itemLabel="3"/>
+                <f:selectItem itemValue="4" itemLabel="4"/>
+                <f:selectItem itemValue="5" itemLabel="5"/>
+            </h:selectOneMenu>
+
+            <br/>
+            <h:commandButton type="reset" value="Сбросить" styleClass="form_element custom_button clear_button"/>
+
+            <br/>
+            <h:commandButton value="Подтвердить" styleClass="form_element custom_button" action="#{resultBean.addResult()}"/>
+        </h:form>
+    </div>
+    <div>
+        <h1>Предыдущие запросы</h1>
+        <h:dataTable columnClasses="x_cell,y_cell,,hitFactor_cell"
+                     id="results_container"
+                     styleClass="form_element #{empty resultBean.results ? 'empty' : ''}"
+                     value="#{resultBean.results}" var="result">
+            <h:column>
+                <f:facet name="header">X</f:facet>
+                <h:outputText value="#{result.x}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Y</f:facet>
+                <h:outputText value="#{result.y}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">R</f:facet>
+                <h:outputText value="#{result.r}"/>
+            </h:column>
+            <h:column>
+                <f:facet name="header">Результат</f:facet>
+                <h:outputText style="color: #{result.hitFactor eq 'Попадание' ? 'green' : 'red'}" value="#{result.hitFactor}"/>
+            </h:column>
+        </h:dataTable>
+
+        <h:commandButton value="Очистить таблицу" styleClass="form_element custom_button" action="#{resultBean.deleteResults()}">
+            <f:ajax execute="@this"
+                    render="results_container"
+                    onevent="clearContainerAndRedrawGraph(elementR.value)"/>
+        </h:commandButton>
+    </div>
+    <h:outputScript library="js" name="main.js"/>
+    <h:outputScript library="js" name="validation.js"/>
+    <h:outputScript library="js" name="graph.js"/>
+</h:body>
+</html>
